@@ -1,23 +1,24 @@
+import { common } from '@kit.AbilityKit'
+import { RDBStoreUtil } from '../common/database/RDBStoreUtil'
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World';
+  private context = getContext(this) as common.UIAbilityContext
+  rdbStoreUtil: RDBStoreUtil = new RDBStoreUtil(this.context)
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
+    Column() {
+      Button('创建表')
         .onClick(() => {
-          this.message = 'Welcome';
+          let sql = `CREATE TABLE IF NOT EXISTS student(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
+          );`
+          this.rdbStoreUtil.executeSQL(sql)
         })
     }
-    .height('100%')
     .width('100%')
+    .height('100%')
   }
 }
