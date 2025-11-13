@@ -1,4 +1,4 @@
-import { relationalStore } from "@kit.ArkData";
+import { relationalStore, ValuesBucket } from "@kit.ArkData";
 import { BusinessError } from '@kit.BasicServicesKit'
 
 let rdbStore: relationalStore.RdbStore
@@ -35,6 +35,19 @@ export class RDBStoreUtil {
         return
       }
       console.info('SQL语句执行成功。')
+    })
+  }
+
+  /**
+   * 新增
+   */
+  add(tableName: string, data: ValuesBucket) {
+    rdbStore.insert(tableName, data, (err: BusinessError, rowId: number) => {
+      if (err) {
+        console.error(`新增失败，code is ${err.code}, message is ${err.message}`)
+        return
+      }
+      console.info(`新增成功，rowId is ${rowId}`)
     })
   }
 }
