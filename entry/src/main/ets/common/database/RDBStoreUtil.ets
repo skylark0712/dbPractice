@@ -1,5 +1,6 @@
 import { relationalStore, ValuesBucket } from "@kit.ArkData";
 import { BusinessError } from '@kit.BasicServicesKit'
+import { Student } from "../../domain/Student";
 
 let rdbStore: relationalStore.RdbStore
 
@@ -49,5 +50,19 @@ export class RDBStoreUtil {
       }
       console.info(`新增成功，rowId is ${rowId}`)
     })
+  }
+
+  /**
+   * 查询
+   */
+  async list(tableName: string) {
+    let predicates = new relationalStore.RdbPredicates(tableName)
+    predicates.orderByAsc('id')
+    let result = await rdbStore.query(predicates)
+    let list: Array<Student> = []
+    while (result.goToNextRow()) {
+      list.push(result.getRow() as Student)
+    }
+    return list
   }
 }

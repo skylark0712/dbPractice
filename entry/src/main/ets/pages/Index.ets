@@ -1,6 +1,7 @@
 import { common } from '@kit.AbilityKit'
 import { RDBStoreUtil } from '../common/database/RDBStoreUtil'
 import { ValuesBucket } from '@kit.ArkData'
+import { Student } from '../domain/Student'
 
 @Entry
 @Component
@@ -8,6 +9,11 @@ struct Index {
   private context = getContext(this) as common.UIAbilityContext
   rdbStoreUtil: RDBStoreUtil = new RDBStoreUtil(this.context)
   @State inputString: string = ''
+  @State studentList: Student[] = []
+
+  async listStudent() {
+    this.studentList = await this.rdbStoreUtil.list('student')
+  }
 
   build() {
     Column() {
@@ -26,7 +32,25 @@ struct Index {
           this.rdbStoreUtil.add('student', data)
           this.inputString = ''
         })
+      Button('获取数据')
+        .onClick(() => {
+          this.listStudent()
+        })
+      List() {
+        ForEach(this.studentList, (item: Student) => {
+          ListItem() {
+            Row({ space: 10 }) {
+              Text(item.id.toString())
+              Text(item.name)
+            }
+            .width('100%')
 
+          }
+        })
+      }
+      .width('100%')
+      .height('400vp')
+      .border({ width: 1 })
     }
     .width('100%')
     .height('100%')
