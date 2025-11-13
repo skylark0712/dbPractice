@@ -65,4 +65,49 @@ export class RDBStoreUtil {
     }
     return list
   }
+
+  /**
+   * 删除
+   */
+  delete(tableName: string, id: number) {
+    let predicates = new relationalStore.RdbPredicates(tableName)
+    predicates.equalTo('id', id)
+    rdbStore.delete(predicates, (err: BusinessError, rows: number) => {
+      if (err) {
+        console.error(`删除失败，code is ${err.code}, message is ${err.message}`)
+        return
+      }
+      console.info(`删除成功，影响行数 is ${rows}`)
+    })
+  }
+
+  /**
+   * 条件查询
+   */
+  async queryId(tableName: string, id: string) {
+    let predicates = new relationalStore.RdbPredicates(tableName)
+    predicates.equalTo('id', id)
+    let result = await rdbStore.query(predicates)
+    let list: Array<Student> = []
+    while (result.goToNextRow()) {
+      list.push(result.getRow() as Student)
+    }
+    return list[0]
+  }
+
+  /**
+   * 修改
+   */
+  updateName(tableName: string, id: string, name: string) {
+    let predicates = new relationalStore.RdbPredicates(tableName)
+    predicates.equalTo('id', id)
+    let data: relationalStore.ValuesBucket = { name: name }
+    rdbStore.update(data, predicates, (err: BusinessError, rows: number) => {
+      if (err) {
+        console.error(`修改失败，code is ${err.code}, message is ${err.message}`)
+        return
+      }
+      console.info(`修改成功，影响行数 is ${rows}`)
+    })
+  }
 }
